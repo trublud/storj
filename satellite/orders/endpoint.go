@@ -116,6 +116,17 @@ func (endpoint *Endpoint) Settlement(stream pb.Orders_SettlementServer) (err err
 		return status.Error(codes.Unauthenticated, err.Error())
 	}
 
+	tx, err := endpoint.DB.BeginTx(ctx)
+	if err != nil {
+		return status.Error(codes.Internal, err.Error())
+	}
+	defer func() {
+		commitErr := tx.Commit()
+		if commitErr != nil {
+			// flush messages
+		}
+	}()
+
 	formatError := func(err error) error {
 		if err == io.EOF {
 			return nil
@@ -200,7 +211,7 @@ func (endpoint *Endpoint) Settlement(stream pb.Orders_SettlementServer) (err err
 			}
 		}
 
-		bucketID, err := endpoint.DB.UseSerialNumber(ctx, orderLimit.SerialNumber, orderLimit.StorageNodeId)
+		bucketID, err := tx.UseSerialNumber(ctx, orderLimit.SerialNumber, orderLimit.StorageNodeId)
 		if err != nil {
 			log.Warn("unable to use serial number", zap.Error(err))
 			if ErrUsingSerialNumber.Has(err) {
@@ -219,18 +230,12 @@ func (endpoint *Endpoint) Settlement(stream pb.Orders_SettlementServer) (err err
 		now := time.Now().UTC()
 		intervalStart := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, now.Location())
 
-		if err := endpoint.DB.UpdateBucketBandwidthSettle(ctx, bucketID, orderLimit.Action, order.Amount, intervalStart); err != nil {
-			if err := endpoint.DB.UnuseSerialNumber(ctx, orderLimit.SerialNumber, orderLimit.StorageNodeId); err != nil {
-				log.Error("unable to unuse serial number", zap.Error(err))
-			}
+		if err := tx.UpdateBucketBandwidthSettle(ctx, bucketID, orderLimit.Action, order.Amount, intervalStart); err != nil {
 			return err
 		}
 
-		if err := endpoint.DB.UpdateStoragenodeBandwidthSettle(ctx, orderLimit.StorageNodeId, orderLimit.Action, order.Amount, intervalStart); err != nil {
-			if err := endpoint.DB.UnuseSerialNumber(ctx, orderLimit.SerialNumber, orderLimit.StorageNodeId); err != nil {
-				log.Error("unable to unuse serial number", zap.Error(err))
-			}
-			if err := endpoint.DB.UpdateBucketBandwidthSettle(ctx, bucketID, orderLimit.Action, -order.Amount, intervalStart); err != nil {
+		if err := tx.UpdateStoragenodeBandwidthSettle(ctx, orderLimit.StorageNodeId, orderLimit.Action, order.Amount, intervalStart); err != nil {
+			if err := tx.UpdateBucketBandwidthSettle(ctx, bucketID, orderLimit.Action, -order.Amount, intervalStart); err != nil {
 				log.Error("unable to rollback bucket bandwidth", zap.Error(err))
 			}
 			return err
