@@ -145,7 +145,10 @@ func (db *DB) Marketing() marketing.DB {
 
 // Orders returns database for storing orders
 func (db *DB) Orders() orders.DB {
-	return &ordersDB{db: db.db}
+	return &ordersDB{
+		db: db.db,
+		methods: db.db,
+	}
 }
 
 // Containment returns database for storing pending audit info

@@ -87,7 +87,7 @@ func (db *ConsoleDB) BeginTx(ctx context.Context) (console.DBTx, error) {
 		return nil, err
 	}
 
-	return &DBTx{
+	return &ConsoleDBTx{
 		ConsoleDB: &ConsoleDB{
 			tx:      tx,
 			methods: tx,
@@ -95,13 +95,13 @@ func (db *ConsoleDB) BeginTx(ctx context.Context) (console.DBTx, error) {
 	}, nil
 }
 
-// DBTx extends Database with transaction scope
-type DBTx struct {
+// ConsoleDBTx extends Database with transaction scope
+type ConsoleDBTx struct {
 	*ConsoleDB
 }
 
 // Commit is a method for committing and closing transaction
-func (db *DBTx) Commit() error {
+func (db *ConsoleDBTx) Commit() error {
 	if db.tx == nil {
 		return errs.New("begin transaction before commit it!")
 	}
@@ -110,7 +110,7 @@ func (db *DBTx) Commit() error {
 }
 
 // Rollback is a method for rollback and closing transaction
-func (db *DBTx) Rollback() error {
+func (db *ConsoleDBTx) Rollback() error {
 	if db.tx == nil {
 		return errs.New("begin transaction before rollback it!")
 	}

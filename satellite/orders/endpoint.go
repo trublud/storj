@@ -24,6 +24,9 @@ import (
 
 // DB implements saving order after receiving from storage node
 type DB interface {
+	// BeginTx is a method for opening transaction
+	BeginTx(ctx context.Context) (DBTx, error)
+
 	// CreateSerialInfo creates serial number entry in database
 	CreateSerialInfo(ctx context.Context, serialNumber storj.SerialNumber, bucketID []byte, limitExpiration time.Time) error
 	// UseSerialNumber creates serial number entry in database
@@ -47,6 +50,15 @@ type DB interface {
 	GetBucketBandwidth(ctx context.Context, bucketID []byte, from, to time.Time) (int64, error)
 	// GetStorageNodeBandwidth gets total storage node bandwidth from period of time
 	GetStorageNodeBandwidth(ctx context.Context, nodeID storj.NodeID, from, to time.Time) (int64, error)
+}
+
+// DBTx extends DB with transaction scope
+type DBTx interface {
+	DB
+	// CommitTransaction is a method for committing and closing transaction
+	Commit() error
+	// RollbackTransaction is a method for rollback and closing transaction
+	Rollback() error
 }
 
 var (
