@@ -97,8 +97,9 @@ type DB interface {
 
 // Config is the global config satellite
 type Config struct {
-	Identity      identity.Config
-	Server        server.Config
+	Identity identity.Config
+	Server   server.Config
+
 	Communication communication.Config
 	Overlay       overlay.Config
 
