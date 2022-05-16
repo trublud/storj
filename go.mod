@@ -9,7 +9,6 @@ require (
 	github.com/graphql-go/graphql v0.7.9-0.20190403165646-199d20bbfed7
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
-
 	github.com/minio/minio v0.0.0-20180508161510-54cd29b51c38
 	github.com/segmentio/go-prompt v1.2.1-0.20161017233205-f0d19b6901ad
 )
@@ -123,5 +122,5 @@ require (
 	gopkg.in/cheggaaa/pb.v1 v1.0.25 // indirect
 	gopkg.in/olivere/elastic.v5 v5.0.76 // indirect
 	gopkg.in/spacemonkeygo/monkit.v2 v2.0.0-20190612171030-cf5a9e6f8fd2
-	gopkg.in/yaml.v2 v2.2.2
+	gopkg.in/yaml.v2 v2.2.8
 )
