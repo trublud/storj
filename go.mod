@@ -9,7 +9,6 @@ require (
 	github.com/graphql-go/graphql v0.7.9-0.20190403165646-199d20bbfed7
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
-
 	github.com/minio/minio v0.0.0-20180508161510-54cd29b51c38
 	github.com/segmentio/go-prompt v1.2.1-0.20161017233205-f0d19b6901ad
 )
@@ -100,8 +99,7 @@ require (
 	github.com/streadway/amqp v0.0.0-20180806233856-70e15c650864 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/stripe/stripe-go v60.17.0+incompatible
-	github.com/tidwall/gjson v1.1.3 // indirect
-	github.com/tidwall/match v0.0.0-20171002075945-1731857f09b1 // indirect
+	github.com/tidwall/gjson v1.9.3 // indirect
 	github.com/vivint/infectious v0.0.0-20190108171102-2455b059135b
 	github.com/yuin/gopher-lua v0.0.0-20180918061612-799fa34954fb // indirect
 	github.com/zeebo/admission v0.0.0-20180821192747-f24f2a94a40c
